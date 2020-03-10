@@ -1,22 +1,24 @@
 package com.sentio.shortcuts
 
 import android.annotation.SuppressLint
+import android.content.pm.LauncherApps
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.PopupWindow
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appList: RecyclerView
     private lateinit var appManager: AppManager
     private var shortcutPopup: PopupWindow? = null
+
+    var shortcutType = LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPopup(app: App, itemView: View): Boolean {
-        val shortcuts = appManager.getShortcutFromApp(app.packageName)
+        val shortcuts = appManager.getShortcutFromApp(app.packageName, shortcutType)
         if (shortcuts.isNotEmpty()) {
             val contentView = createShortcutListView(shortcuts)
             val locations = IntArray(2, { 0 })
@@ -61,6 +63,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // Disable
+        finish()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.dynamicType -> {
+                shortcutType = LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC
+                Toast.makeText(this, "Dynamic", LENGTH_SHORT).show()
+                true
+            }
+            R.id.staticType -> {
+                shortcutType = LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST
+                Toast.makeText(this, "Static", LENGTH_SHORT).show()
+                true
+            }
+            R.id.bothTypes -> {
+                shortcutType = LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST
+                Toast.makeText(this, "Both", LENGTH_SHORT).show()
+                true
+            }
+            R.id.openWithId -> {
+                appManager.launchWithId = true
+                Toast.makeText(this, "launch with ID", LENGTH_SHORT).show()
+                true
+            }
+            R.id.openWithIntent -> {
+                appManager.launchWithId = false
+                Toast.makeText(this, "launch with Intent", LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

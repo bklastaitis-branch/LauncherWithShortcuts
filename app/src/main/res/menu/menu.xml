@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/dynamicType"
+        android:title="dynamicType"
+        app:showAsAction="never"/>
+    <item android:id="@+id/staticType"
+        android:title="staticType"
+        app:showAsAction="never"/>
+    <item android:id="@+id/bothTypes"
+        android:title="bothTypes"
+        app:showAsAction="never"/>
+    <item android:id="@+id/openWithId"
+        android:title="openWithId"
+        app:showAsAction="never"/>
+    <item android:id="@+id/openWithIntent"
+        android:title="openWithIntent"
+        app:showAsAction="never" />
+</menu>
